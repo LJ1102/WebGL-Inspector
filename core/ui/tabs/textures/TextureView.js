@@ -151,9 +151,9 @@
             case gl.UNSIGNED_BYTE:
                 switch (format) {
                     case gl.ALPHA:
-                        var strideDiff = width % unpackAlignment;
-                        for (var y = 0; y < height; y++) {
-                            for (var x = 0; x < width; x++, sn += 1, dn += 4) {
+                        var strideDiff = width % unpackAlignment, x, y;
+                        for (y = 0; y < height; y++) {
+                            for (x = 0; x < width; x++, sn += 1, dn += 4) {
                                 imageData.data[dn + 0] = 0;
                                 imageData.data[dn + 1] = 0;
                                 imageData.data[dn + 2] = 0;
@@ -163,9 +163,9 @@
                         }
                         break;
                     case gl.RGB:
-                        var strideDiff = (width * 3) % unpackAlignment;
-                        for (var y = 0; y < height; y++) {
-                            for (var x = 0; x < width; x++, sn += 3, dn += 4) {
+                        var strideDiff = (width * 3) % unpackAlignment, x, y;
+                        for (y = 0; y < height; y++) {
+                            for (x = 0; x < width; x++, sn += 3, dn += 4) {
                                 imageData.data[dn + 0] = source[sn + 0];
                                 imageData.data[dn + 1] = source[sn + 1];
                                 imageData.data[dn + 2] = source[sn + 2];
@@ -175,9 +175,9 @@
                         }
                         break;
                     case gl.RGBA:
-                        var strideDiff = (width * 4) % unpackAlignment;
-                        for (var y = 0; y < height; y++) {
-                            for (var x = 0; x < width; x++, sn += 4, dn += 4) {
+                        var strideDiff = (width * 4) % unpackAlignment, x, y;
+                        for (y = 0; y < height; y++) {
+                            for (x = 0; x < width; x++, sn += 4, dn += 4) {
                                 imageData.data[dn + 0] = source[sn + 0];
                                 imageData.data[dn + 1] = source[sn + 1];
                                 imageData.data[dn + 2] = source[sn + 2];
@@ -248,9 +248,9 @@
             case gl.FLOAT:
                 switch (format) {
                     case gl.ALPHA:
-                        var strideDiff = width % unpackAlignment;
-                        for (var y = 0; y < height; y++) {
-                            for (var x = 0; x < width; x++, sn += 1, dn += 4) {
+                        var strideDiff = width % unpackAlignment, x, y;
+                        for (y = 0; y < height; y++) {
+                            for (x = 0; x < width; x++, sn += 1, dn += 4) {
                                 imageData.data[dn + 0] = 0;
                                 imageData.data[dn + 1] = 0;
                                 imageData.data[dn + 2] = 0;
@@ -260,9 +260,9 @@
                         }
                         break;
                     case gl.RGB:
-                        var strideDiff = (width * 3) % unpackAlignment;
-                        for (var y = 0; y < height; y++) {
-                            for (var x = 0; x < width; x++, sn += 3, dn += 4) {
+                        var strideDiff = (width * 3) % unpackAlignment, x, y;
+                        for (y = 0; y < height; y++) {
+                            for (x = 0; x < width; x++, sn += 3, dn += 4) {
                                 imageData.data[dn + 0] = Math.floor(source[sn + 0] * 255.0);
                                 imageData.data[dn + 1] = Math.floor(source[sn + 1] * 255.0);
                                 imageData.data[dn + 2] = Math.floor(source[sn + 2] * 255.0);
@@ -272,9 +272,9 @@
                         }
                         break;
                     case gl.RGBA:
-                        var strideDiff = (width * 4) % unpackAlignment;
-                        for (var y = 0; y < height; y++) {
-                            for (var x = 0; x < width; x++, sn += 4, dn += 4) {
+                        var strideDiff = (width * 4) % unpackAlignment, x, y;
+                        for (y = 0; y < height; y++) {
+                            for (x = 0; x < width; x++, sn += 4, dn += 4) {
                                 imageData.data[dn + 0] = Math.floor(source[sn + 0] * 255.0);
                                 imageData.data[dn + 1] = Math.floor(source[sn + 1] * 255.0);
                                 imageData.data[dn + 2] = Math.floor(source[sn + 2] * 255.0);
@@ -319,21 +319,21 @@
         if ((call.name == "texImage2D") || (call.name == "texSubImage2D") ||
             (call.name == "compressedTexImage2D") || (call.name == "compressedTexSubImage2D")) {
             // Gather up pixel store state between this call and the previous one
-            var pixelStoreState = {};
-            for (var i = version.calls.indexOf(call) - 1; i >= 0; i--) {
-                var prev = version.calls[i];
+            var pixelStoreState = {}, prev, pname, i;
+            for (i = version.calls.indexOf(call) - 1; i >= 0; i--) {
+                prev = version.calls[i];
                 if ((prev.name == "texImage2D") || (prev.name == "texSubImage2D") ||
                     (prev.name == "compressedTexImage2D") || (prev.name == "compressedTexSubImage2D")) {
                     break;
                 }
-                var pname = gli.info.enumMap[prev.args[0]];
+                pname = gli.info.enumMap[prev.args[0]];
                 pixelStoreState[pname] = prev.args[1];
             }
 
             // TODO: display src of last arg (either data, img, video, etc)
-            var sourceArg = null;
-            for (var n = 0; n < call.args.length; n++) {
-                var arg = call.args[n];
+            var sourceArg = null, n, arg;
+            for (n = 0; n < call.args.length; n++) {
+                arg = call.args[n];
                 if (arg) {
                     if ((arg instanceof HTMLCanvasElement) ||
                         (arg instanceof HTMLImageElement) ||
@@ -453,17 +453,18 @@
     };
 
     function generateTextureHistory(gl, el, texture, version) {
-        var titleDiv = document.createElement("div");
+    	var titleDiv, rootEl, call, n;
+        titleDiv = document.createElement("div");
         titleDiv.className = "info-title-secondary";
         titleDiv.innerHTML = "History";
         el.appendChild(titleDiv);
 
-        var rootEl = document.createElement("div");
+        rootEl = document.createElement("div");
         rootEl.className = "texture-history";
         el.appendChild(rootEl);
 
-        for (var n = 0; n < version.calls.length; n++) {
-            var call = version.calls[n];
+        for (n = 0; n < version.calls.length; n++) {
+            call = version.calls[n];
             appendHistoryLine(gl, rootEl, texture, version, call);
         }
     };
