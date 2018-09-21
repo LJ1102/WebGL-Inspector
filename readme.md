@@ -1,3 +1,7 @@
+UNMAINTAINED
+====================
+This is provided as-is, except for enabling webgl2 inspection this codebase is still on a 2013 level, this fork is not being updated or maintained.
+
 About
 ====================
 WebGL Inspector is a tool inspired by [gDEBugger](http://www.gremedy.com/) and [PIX](http://msdn.microsoft.com/en-us/library/ee417062.aspx)
